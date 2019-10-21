@@ -10,7 +10,7 @@ How does Garbage Collector determine Live objects.
 
 We learn how to interact with JVM externally i.e using tools given by JVM or internally using some classes provided by JVM.  
 
-### Garbage Colletion .. Why GC?
+### :bulb: Garbage Colletion .. Why GC?
 Imagine,  
 > Account acc = new Account();  
 The question will arise who will delete this object? Creator or user?  
@@ -38,7 +38,7 @@ So dead objects may be present in memory. BUT no live object will be deleted or 
 We don't know when GC will run, whether it will run before our application ends or not.
 
 
-### Different Types of Garbage Collection
+### :bulb: Different Types of Garbage Collection
 There are different types of GARBAGE COLLECTORS -  
 **1) Do nothing** - Not freeing any memory. Just guarenting that no live objects will be reclaimed.
 
@@ -59,11 +59,11 @@ So GC are of many types. So we tend to have a mixture of all these.
 
 Now let's have a look at some of these in detail.  
 
-### Reference Counted Garbage Collection
+### 2. Reference Counted Garbage Collection
 In reference counting, we have a problem of circular references where an object1 references object 2 and object2 also references object1 and they have no external reference. This is also known as Island of Isolation.  
 These cyclic references won't be removed, although there is no reference that can be used to access these objects.
 
-### Mark and Sweep GCs
+### 3. Mark and Sweep GCs
 
 Typically 3 phases -  
 **MARK** - Identifying objects still in use.
@@ -89,7 +89,7 @@ In java we don't have physical addresses of memory. Objects internally manages t
 ![noImage](./img/MarkAndSweep4.png)
 
 
-### Copying GCs 
+### 4. Copying GCs 
 
 Things are a little different.
 When memory for a buffer gets full. GC run and mark live memory.
@@ -108,7 +108,7 @@ After the copy , we end up with a compacted copy of the data in new space data a
 The next time we do garbage collection (i.e when the space in which we are allocating memory from now gets full), the roles of old space (from space) and new space (to space) will be reversed.
 
 
-### Generational GCs
+### 5. Generational GCs
 
 GENERATIONAL COLLECTORS
 There are different generations - Younger , older.  
@@ -130,7 +130,7 @@ Java has two: Young and old generations.
 .Net has three.
 
 
-## How Garbage Collection Works in the Oracle JVM
+## :bulb: How Garbage Collection Works in the Oracle JVM
 
 ### Introducing the Players
 
@@ -169,7 +169,7 @@ Here live things used by Java runtime. Things like class information is stored h
 
 
 
-### MINOR GARBAGE COLLECTS AND MAJOR GARBAGE COLLECTS
+### :bulb: MINOR GARBAGE COLLECTS AND MAJOR GARBAGE COLLECTS
 
 
 **Minor Garbage collection** - When GC collects objects in Young generation. How this works?  
@@ -192,7 +192,7 @@ Here live things used by Java runtime. Things like class information is stored h
 
 ![noImage](./img/MinorGarbageCollection7.png)
 
-**Major garbage collection**  
+**:bulb: Major garbage collection**  
 - Triggered when the old/tenured generation is full. 
 - Collects old and young generations (this is really a 'full GC'... JVM must be going from rootSet to all nodes .. marking them live). 
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
@@ -292,7 +292,7 @@ During Major GC as all objects from all the generation spaces must be traversed 
 As during full GC all nodes looked , no Card tables must be used.
 
 
-Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Majot Garbage Collection.  They are of 5 types.
+:bulb: Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Majot Garbage Collection.  They are of 5 types.
 1) Serial GC
 2) Parallel GC
 3) Parallel Old GC (Parallel Compacting GC)
@@ -308,20 +308,20 @@ Now are we thinking right.. How would we know ... Yess the time has come.. Lets 
 Now we look at different types of GCs
 Serial , Parallel and parallel old collector work in same way. Eden , survivor . old space and mark and sweep algo and copy algo.
 Where they differ is the amount of concurrency each collector has.
-1) Serial collector
+### MGC1) Serial collector
 Single threaded - it means it is a stop the world collector i.e we stop everything and run GC.  
 
 ![noImage](./img/SerialCollector.png)
 
-2) Parallel collector - Multiple threaded for minor collection and single for major.  So less down time i.e less stop the world time.  
+### MGC2) Parallel collector - Multiple threaded for minor collection and single for major.  So less down time i.e less stop the world time.  
 
 ![noImage](./img/parallelCollector.png)
 
-3) Parallel old collector - multiple for both.  
+### MGC3) Parallel old collector - multiple for both.  
 
 ![noImage](./img/ParallelOldCollector.png)
 
-4) concurrent mark and sweep
+### MGC4) concurrent mark and sweep
 Only collects old space. Only collect during major GC.
 no bump the pointer allocation
 fragments the heap and manages sets of free lists for each of the fragments. It tries to allocate the object in one of these fragments and so it has to check these free lists and update these free lists. So it causes the collector to run more slowly.
@@ -351,7 +351,7 @@ Now we need to traverse these nodes. But we can do that concurrently with applic
 5) Resetting - resets everything for next round.
 
 
-### The G1 Garbage Collector
+### MGC 5) The G1 Garbage Collector
 G1 Garbage collector - planned replacement of CMS
 instead of having Eden and tenure OR
 Young and old memory. We now break all memory space into regions
@@ -382,7 +382,7 @@ The G1 only stops the application at the beginning of the GC to do some quick bo
 ![noImage](./img/G1Collector6%20Old%20GC2.png)
 
 
-### Which Collector to use?
+### :bulb: Which Collector to use?
 
 ![noImage](./img/Differrent%20GCs1.png)
 
