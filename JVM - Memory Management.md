@@ -1,10 +1,16 @@
-# Garbage Collection
+JVM Memory Management - 
+How objects allocated.
+How Objects garbage collected.
+How does Garbage Collector determine Live objects.
+
+
+# JVM Memory Management
 
 ## Introduction 
 
 We learn how to interact with JVM externally i.e using tools given by JVM or internally using some classes provided by JVM.  
 
-### Why GC?
+### Garbage Colletion .. Why GC?
 Imagine,  
 > Account acc = new Account();  
 The question will arise who will delete this object? Creator or user?  
@@ -226,7 +232,7 @@ But in multithreaded environment two threads may compete for the same piece of m
 ![noImage](./img/MemoryAllocation6.png)
 
 
-### How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does olf GC see live objects?
+### How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does old GC see live objects?
 
  JVM STACK AREA 
 For every thread, JVM creates a separate stack at the time of thread creation. The memory for a Java Virtual Machine stack does not need to be contiguous. The Java virtual machine only performs two operations directly on Java Stacks: it pushes and pops frames. And stack for a particular thread may be termed as Run – Time Stack. Each and every method call performed by that thread is stored in the corresponding run-time stack including parameters, local variables, intermediate computations, and other data. After completing a method, corresponding entry from the stack is removed. After completing all method calls the stack becomes empty and that empty stack is destroyed by the JVM just before terminating the thread. The data stored in the stack is available for the corresponding thread and not available to the remaining threads. Hence we can say local data is thread safe. Each entry in the stack is called Stack Frame or Activation Record.  
@@ -271,6 +277,9 @@ So minor GC sees card table and load the memory corresponding to references pres
 ![noImage](./img/LiveobjectsManagement8.png)
 
 ![noImage](./img/LiveobjectsManagement9.png)
+
+During Major GC as all objects from all the generation spaces must be traversed to mark them live. So During major GC JVM must be following all the nodes from root set without using card tables or anything. Card tables were needed only for young generation to get live objects without traversing old generation objects to get live obects in Young generation. 
+As during full GC all nodes looked , no Card tables used
 
 
 ###  Serial Versus Parallel Garbage Collectors
