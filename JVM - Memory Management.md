@@ -168,7 +168,9 @@ When an object survives number of GCs. Then runtime decides that that object wil
 Here live things used by Java runtime. Things like class information is stored here. This is never GCied.
 
 
-### Minor Garbage Collects and Major Garbage Collects
+
+### MINOR GARBAGE COLLECTS AND MAJOR GARBAGE COLLECTS
+
 
 **Minor Garbage collection** - When GC collects objects in Young generation. How this works?  
 
@@ -196,9 +198,17 @@ Here live things used by Java runtime. Things like class information is stored h
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
 - Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  (i.e if size of object is above threshold  .. put it in tenure space i.e old generation)
 
+### Before getting geep into Major GCs Lets move aside and learn a bit of things first:
+ - How to objects come in old generation
+ - How objects are allocated by JVM.
+ - How objects are choosen to be live (by young GC and old generation GC).
+ - How choosing of live objects is made easy for Young Gen GC. 
+
+After this we will study different types of GCs for Old generations.
+
 So Major GC collects old gen. So question now comes.. What are moments when old gen gets objects.
 
-When will JVM promote the objects to old generation :question:  
+### 1) When will JVM promote the objects to old generation :question:  
 - After a certain number of garbage collects.
 - If survivor space is full.
 - If JVM has been told to always create objects in old space
@@ -214,10 +224,10 @@ Now before even all this.. When an object is made it needs to be allocated space
 
 And also we need to know How do we choose whether an object is live or not. 
 
-### How Allocations Work in the Java Virtual Machine
+### 2) How Allocations Work in the Java Virtual Machine
 How does the allocation of Memory happens in java
-allocate and incr pointer.
-But in multithreaded environment two threads may compete for the same piece of memory. So we'll be needing locks and locks are expensive. So TLABS used..
+1) allocate and incr pointer.
+2) But in multithreaded environment two threads may compete for the same piece of memory. So we'll be needing locks and locks are expensive. So TLABS (Thread-Local Allocation Buffers) used. This allows each thread to have a small portion of its Eden space that corresponds to its own share. As each thread can only access to their own TLAB, even the bump-the-pointer technique will allow memory allocations without a lock. 
 
 ![noImage](./img/MemoryAllocation1.png)
 
@@ -232,7 +242,7 @@ But in multithreaded environment two threads may compete for the same piece of m
 ![noImage](./img/MemoryAllocation6.png)
 
 
-### How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does old GC see live objects?
+### 3) How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does old GC see live objects?
 
  JVM STACK AREA 
 For every thread, JVM creates a separate stack at the time of thread creation. The memory for a Java Virtual Machine stack does not need to be contiguous. The Java virtual machine only performs two operations directly on Java Stacks: it pushes and pops frames. And stack for a particular thread may be termed as Run – Time Stack. Each and every method call performed by that thread is stored in the corresponding run-time stack including parameters, local variables, intermediate computations, and other data. After completing a method, corresponding entry from the stack is removed. After completing all method calls the stack becomes empty and that empty stack is destroyed by the JVM just before terminating the thread. The data stored in the stack is available for the corresponding thread and not available to the remaining threads. Hence we can say local data is thread safe. Each entry in the stack is called Stack Frame or Activation Record.  
@@ -247,11 +257,11 @@ Live roots -
 3) if using Java Native interface (JNI) or synch monitors doing locking , Those are also live  
 
 **What objects are kept live during GC ?**  
-So any object with reference form live root is kept live during GC.
-ref from live rooted objects are also kept live
-if refs from old gen to young ones, they are also kept live. Why? Because there might be an object in the old generation whose reference has been destroyed, but since it’s present in the old gen, therefore all the objects in the young generation that are referred from this old gen object must be preserved.
+- So any object with reference form live root is kept live during GC.
+- References from live rooted objects are also kept live. (Even if references from old gen to young ones, they are also kept live. Why? Since it is present in the old gen .. it is considered live thus its childeren should also be considered live, therefore all the objects in the young generation that are referred from this old gen object must be preserved.)
 
-But how. Does it scans old gen space .. No.. Uses CArd tables.
+But how. Does it start from root Set and while traversing also scans old gen space ..?? 
+No.. Uses Card tables.
 
 ### What Is a Cardtable and How Is It Used in Garbage Collection
 
@@ -279,7 +289,16 @@ So minor GC sees card table and load the memory corresponding to references pres
 ![noImage](./img/LiveobjectsManagement9.png)
 
 During Major GC as all objects from all the generation spaces must be traversed to mark them live. So During major GC JVM must be following all the nodes from root set without using card tables or anything. Card tables were needed only for young generation to get live objects without traversing old generation objects to get live obects in Young generation. 
-As during full GC all nodes looked , no Card tables used
+As during full GC all nodes looked , no Card tables must be used.
+
+
+Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Majot Garbage Collection.  They are of 5 types.
+1) Serial GC
+2) Parallel GC
+3) Parallel Old GC (Parallel Compacting GC)
+4) Concurrent Mark & Sweep GC  (or "CMS")
+5) Garbage First (G1) GC
+
 
 
 ###  Serial Versus Parallel Garbage Collectors
