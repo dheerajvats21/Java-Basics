@@ -62,7 +62,9 @@ These cyclic references won't be removed, although there is no reference that ca
 Typically 3 phases -  
 **MARK** - Identifying objects still in use.
 Start from the root set and following other references from nodes of memory, GC mark the live memory.
-In case of cycle in memory and not reference from root set .. No problem because we’ll not be able to reach that cycle as no external references.
+In case of cycle in memory and not reference from root set .. No problem because we’ll not be able to reach that cycle as no external references. 
+What kinda nodes are rootes .. temme ? Yeah Think bachaaaa. (Gyanam na so easy Asti)
+Main class .. main method scope, Claases objects, JVM (which tell which objects are always on ).
 
 ![noImage](./img/MarkAndSweep1.png) 
 
