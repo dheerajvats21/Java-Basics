@@ -133,10 +133,10 @@ Java has two: Young and old generations.
 - Memory fragmentation - Does GC Defragments memory all at one or leave it for later stage. or it leaves memory fragmented on the basis that it may lead to lower cost than defragment it.  
 - Throughput - how quickly can GC run, How quickly can it collect garbage and how it effects behaviour of application.  
 
-**Different GCs**  
+**Gcs in JVM are combination of these GCs**  
 - Generational GC
 - Copying
-- Mark and sweep
+- Mark and sweep 
 
 **Multi-core** 
 We also need to think about is if you are running on a multi core machine, So can GC run in parallel with application . Java provides these types of GC as well.
