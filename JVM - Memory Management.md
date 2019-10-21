@@ -129,7 +129,7 @@ Java has two: Young and old generations.
 ### Introducing the Players
 
 **Things to consider**  
-- Stop the world events - its when GC pauses the entire application and at that point it collects garbage. We want to try and minimise these events.  
+- Stop the world events - its when GC pauses the entire application and at that point it collects garbage. We want to try and minimise these events. These events needed as when there is less memory left, application should not allocate more memory to objects.
 - Memory fragmentation - Does GC Defragments memory all at one or leave it for later stage. or it leaves memory fragmented on the basis that it may lead to lower cost than defragment it.  
 - Throughput - how quickly can GC run, How quickly can it collect garbage and how it effects behaviour of application.  
 
