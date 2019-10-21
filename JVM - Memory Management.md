@@ -263,7 +263,7 @@ Live roots -
 But how. Does it start from root Set and while traversing also scans old gen space ..?? 
 No.. Uses Card tables.
 
-### What Is a Cardtable and How Is It Used in Garbage Collection
+### 4) What Is a Cardtable and How Is It Used in Garbage Collection
 
 ![noImage](./img/LiveobjectsManagement1.png)
 
