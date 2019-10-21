@@ -6,7 +6,7 @@ How does Garbage Collector determine Live objects.
 
 # JVM Memory Management
 
-## Introduction 
+## :bulb: Introduction 
 
 We learn how to interact with JVM externally i.e using tools given by JVM or internally using some classes provided by JVM.  
 
