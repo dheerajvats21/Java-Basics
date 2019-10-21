@@ -186,11 +186,11 @@ Here live things used by Java runtime. Things like class information is stored h
 
 **Major garbage collection**  
 - Triggered when the old/tenured generation is full. 
-- Collects old and young generations (this is really a 'full GC'). 
+- Collects old and young generations (this is really a 'full GC'... JVM must be going from rootSet to all nodes .. marking them live). 
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
 - Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  (i.e if size of object is above threshold  .. put it in tenure space i.e old generation)
 
-So Major GC collects old gen. So question now comes.. What are moments when old gen has objects.
+So Major GC collects old gen. So question now comes.. What are moments when old gen gets objects.
 
 When will JVM promote the objects to old generation :question:  
 - After a certain number of garbage collects.
@@ -204,6 +204,9 @@ When will JVM promote the objects to old generation :question:
 
 ![noImage](./img/MajorGarbageCollection5.png)
 
+Now before even all this.. When an object is made it needs to be allocated space.. right? .. Allocation to Young generation should be really fast as object is getting space in it when it gets created.. And objects that are already mostly gets copied to older generation . So Lets dive into this.
+
+And also we need to know How do we choose whether an object is live or not. 
 
 ### How Allocations Work in the Java Virtual Machine
 How does the allocation of Memory happens in java
@@ -223,7 +226,8 @@ But in multithreaded environment two threads may compete for the same piece of m
 ![noImage](./img/MemoryAllocation6.png)
 
 
-### What Is a Cardtable and How Is It Used in Garbage Collection
+### How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does olf GC see live objects?
+
  JVM STACK AREA 
 For every thread, JVM creates a separate stack at the time of thread creation. The memory for a Java Virtual Machine stack does not need to be contiguous. The Java virtual machine only performs two operations directly on Java Stacks: it pushes and pops frames. And stack for a particular thread may be termed as Run – Time Stack. Each and every method call performed by that thread is stored in the corresponding run-time stack including parameters, local variables, intermediate computations, and other data. After completing a method, corresponding entry from the stack is removed. After completing all method calls the stack becomes empty and that empty stack is destroyed by the JVM just before terminating the thread. The data stored in the stack is available for the corresponding thread and not available to the remaining threads. Hence we can say local data is thread safe. Each entry in the stack is called Stack Frame or Activation Record.  
 
@@ -242,6 +246,8 @@ ref from live rooted objects are also kept live
 if refs from old gen to young ones, they are also kept live. Why? Because there might be an object in the old generation whose reference has been destroyed, but since it’s present in the old gen, therefore all the objects in the young generation that are referred from this old gen object must be preserved.
 
 But how. Does it scans old gen space .. No.. Uses CArd tables.
+
+### What Is a Cardtable and How Is It Used in Garbage Collection
 
 ![noImage](./img/LiveobjectsManagement1.png)
 
