@@ -1305,7 +1305,32 @@ https://stackoverflow.com/questions/758570/is-it-possible-to-make-anonymous-inne
 
 
 
+### MIND MAP
+Java tools and libs -> 
+Java language and platform ->  runtime environment -> JDK and JRE -> Packages -> Classes (class names and file names etc, main method) -> Object initial times (constructor, field initialization, field initialization block etc (static and for instance ) ) ->  parameters (immutability inside of function) -> base class parameters accesses (fields hiding)->  method overriding -> in method overriding base class var behaved as if it is of derived class as it could access overrided method , reverse can also be done …. So we  arrive at “super” -> 
+Defaults can be changed i.e u can limit or require the overriding (abstract, final classes and methods) -> constructors not inherited, neither overridden -> 
 
+Now as the class is build and all about class building and inheritance,  we come to different classes i.e data types, String, String buffer, Primitive Wrapper classes, Their immutability, equality, boxing , unboxing etc ->  final fields (when are they set) -> enumeration types.
+
+So we have seen from how object is made and what are different data types. Now , What if an error occurs at runtime (e.g div by 0), JVM throws errors (using throw statement) , as it provides throwable class. -> Every error extends Throwable, error, Exception, RuntimeException etc -> try catch finally -> Exception go up the call stack -> Exception compatibility in overriding functions in  inheritance -> use of either try catch or throw in checked exceptions 
+
+Now we have seen how object is made and what happens when error comes. Now how to order this code that we have written and how to make it usable and accessible. Is everything accessible everywhere . So we come to Packages. -> Why use package (namespace, access boundary, distribution ) -> resolve name of types using packages ->  use of import (Single import , on demand) -> access modifiers, package private (public , private, protected, no access modifier). -> build code using package name -> archive files i.e creating jar files for distribution (using JDK, build automation systems).
+
+After object construction , different types of classes, error handling, packages we read what different things are there inside of a class.
+So now we read about Class level things.
+Interfaces
+ Sometimes we want some class to implement common functionality, for this there is a provision of implementing abstract relationships using interfaces. -> it is contract without implementation -> include constants and methods -> classes implement interfaces and can implement multiple interfaces at same time (iterable , iterator example) -> interface can extend interface -> implementing extended interface means implementing interface by default.
+      2) Static members 
+   Static field and methods -> static initialization block.
+     3) Nested Types
+        Java allows Classes , interfaces inside classes , interfaces (NESTED TYPES)….. which becomes members of enclosing types. Now these may be of two types.
+            1) no certain relationship between instances of nested and enclosing type -        purpose - structure and scoping -> some instance variables may be wrapped into a nested class as they may represent a concept (structure) and need to be there in relative to enclosing class(scoping) 
+             2)  certain relationship i.e Each instance of nested class is associated with an instance of the enclosing class.
+Non static classes nested within classes
+   FlightIterable and Flight Iterator example -> Inner class using ParentClass.this.
+
+
+     4) anonymous classes - declared at the time of creation -> Always inner classes (associated with instance of enclosing class) -> used where specific implementation of interface or base classes required once at a place only.
 
 
 
