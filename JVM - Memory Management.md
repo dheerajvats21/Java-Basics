@@ -186,9 +186,11 @@ Here live things used by Java runtime. Things like class information is stored h
 
 **Major garbage collection**  
 - Triggered when the old/tenured generation is full. 
-- Collects old and young generations (although this is really a 'full GC'). 
+- Collects old and young generations (this is really a 'full GC'). 
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
-- Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  
+- Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  (i.e if size of object is above threshold  .. put it in tenure space i.e old generation)
+
+So Major GC collects old gen. So question now comes.. What are moments when old gen has objects.
 
 When will JVM promote the objects to old generation :question:  
 - After a certain number of garbage collects.
