@@ -292,7 +292,7 @@ During Major GC as all objects from all the generation spaces must be traversed 
 As during full GC all nodes looked , no Card tables must be used.
 
 
-:bulb: Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Majot Garbage Collection.  They are of 5 types.
+### :bulb: Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Major Garbage Collection.  They are of 5 types.
 1) Serial GC
 2) Parallel GC
 3) Parallel Old GC (Parallel Compacting GC)
