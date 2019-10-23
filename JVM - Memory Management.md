@@ -3,6 +3,22 @@ How objects allocated.
 How Objects garbage collected.
 How does Garbage Collector determine Live objects.
 
+MIND MAP - 
+1) Why GC ?
+2) Different Types of GCs - Do nothing , Reference Counting, Mark and sweep, Coying, Generational, Incremental.
+        GC in oracle JVM 
+        JVM are combination of these GCs - Generational GC, Copying, Mark and sweep 
+3) Things to consider - Stop the world events, throughput, Memory fragmentation.
+   Memory - Eden Space , survivor space, tenured space , permanent space.
+4) Young Generation - Eden Space , survivor space.
+5) Minor Garbage collection (how it happens using youg Generation), Major Garbage Collection (What is it).
+6) ASIDES before going to Major Garbage Collection- 
+             - How to objects come in old generation
+             - How objects are allocated by JVM. - bump the pointer, TLBs
+             - How objects are choosen to be live (by young GC and old generation GC).
+             - How choosing of live objects is made easy for Young Gen GC. (What Is a Cardtable and How Is It Used in Garbage Collection...write barries.)
+             - a prediction about Old Gen mechanism of watching live objects.
+
 
 # JVM Memory Management
 
@@ -263,7 +279,7 @@ Live roots -
 But how. Does it start from root Set and while traversing also scans old gen space ..?? 
 No.. Uses Card tables.
 
-### 4) What Is a Cardtable and How Is It Used in Garbage Collection
+### 4) How choosing of live objects is made easy for Young Gen GC....... What Is a Cardtable and How Is It Used in Garbage Collection
 
 ![noImage](./img/LiveobjectsManagement1.png)
 
