@@ -187,7 +187,6 @@ Here live things used by Java runtime. Things like class information is stored h
 
 ### :bulb: MINOR GARBAGE COLLECTS AND MAJOR GARBAGE COLLECTS
 
-
 **Minor Garbage collection** - When GC collects objects in Young generation. How this works?  
 
 - Objects that were allocated into Eden space
@@ -213,6 +212,9 @@ Here live things used by Java runtime. Things like class information is stored h
 - Collects old and young generations (this is really a 'full GC'... JVM must be going from rootSet to all nodes .. marking them live). In such a case the young generation is collected first followed by the old generation. If the old generation is too full to accept the content of the young generation, the young generation GC is omitted and the old generation GC is used to collect the full heap, either in parallel or serial. Either way the whole heap is collected with a stop-the-world event.
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
 - Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  (i.e if size of object is above threshold  .. put it in tenure space i.e old generation)
+
+
+### THESE ARE COLLECTION THAT HAPPEN.. its not necessary that one GARBAGE COLLECTOR does both young and Old collection. There may be ONE COLLECTOR  or COMBINATION OF DIFFERENT TYPES OF COLLECTORS which does Major and Minor Collection.
 
 ### :bulb: We are going to be learning types of GCs used in JVM. But before that lets learn a bit of things about Java objects  allocation , transfer, marking live etc :
  - How to objects come in old generation
@@ -306,25 +308,21 @@ So minor GC sees card table and load the memory corresponding to references pres
 
 ![noImage](./img/LiveobjectsManagement9.png)
 
-During Major GC as all objects from all the generation spaces must be traversed to mark them live. So During major GC JVM must be following all the nodes from root set without using card tables or anything. Card tables were needed only for young generation to get live objects without traversing old generation objects to get live obects in Young generation. 
-As during full GC all nodes looked , no Card tables must be used.
 
-
-### :bulb: Now are we thinking right.. How would we know ... Yess the time has come.. Lets deep dive into GCs for Major Garbage Collection.  They are of 5 types.
+### :bulb: Yess the time has come.. Lets study different Garbage Collection used by JVM . All of these do Old Generation collection atleast. These may be used alone or in combination with some other type of GC to do both Young And Old Collections.
+They are of 5 types.
 1) Serial GC
 2) Parallel GC
 3) Parallel Old GC (Parallel Compacting GC)
 4) Concurrent Mark & Sweep GC  (or "CMS")
 5) Garbage First (G1) GC
 
-
-
 ###  Serial Versus Parallel Garbage Collectors
 
 (https://www.cubrid.org/blog/understanding-java-garbage-collection)  
 
 Now we look at different types of GCs
-Serial , Parallel and parallel old collector work in same way. Eden , survivor . old space and mark and sweep algo and copy algo.
+Serial , Parallel and parallel old collector work in same way. Eden , survivor . old space and mark-sweep-compact algo.
 Where they differ is the amount of concurrency each collector has.
 ### MGC1) Serial collector
 Single threaded - it means it is a stop the world collector i.e we stop everything and run GC.  
