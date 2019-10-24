@@ -210,19 +210,19 @@ Here live things used by Java runtime. Things like class information is stored h
 
 **:bulb: Major garbage collection**  
 - Triggered when the old/tenured generation is full. 
-- Collects old and young generations (this is really a 'full GC'... JVM must be going from rootSet to all nodes .. marking them live). 
+- Collects old and young generations (this is really a 'full GC'... JVM must be going from rootSet to all nodes .. marking them live). In such a case the young generation is collected first followed by the old generation. If the old generation is too full to accept the content of the young generation, the young generation GC is omitted and the old generation GC is used to collect the full heap, either in parallel or serial. Either way the whole heap is collected with a stop-the-world event.
 - It is slow as Major GC has to go through large sections of heap. It's also possible that, The memory allocated had been paged. So it has again to be paged back in.
 - Its also possible to allocate objects directly into the old generation. No direct way of doing it. But we can set option on the JVM called PretenureSizeThreshold.  (i.e if size of object is above threshold  .. put it in tenure space i.e old generation)
 
-### Before getting geep into Major GCs Lets move aside and learn a bit of things first:
+### :bulb: We are going to be learning types of GCs used in JVM. But before that lets learn a bit of things about Java objects  allocation , transfer, marking live etc :
  - How to objects come in old generation
  - How objects are allocated by JVM.
  - How objects are choosen to be live (by young GC and old generation GC).
  - How choosing of live objects is made easy for Young Gen GC. 
 
-After this we will study different types of GCs for Old generations.
+After this we will study different types of GCs (which does Old generations collection OR both young and old generation colection). OKAY ....
 
-So Major GC collects old gen. So question now comes.. What are moments when old gen gets objects.
+So ....Major GC collects old gen. So question now comes.. What are moments when old gen gets objects.
 
 ### 1) When will JVM promote the objects to old generation :question:  
 - After a certain number of garbage collects.
@@ -241,7 +241,7 @@ Now before even all this.. When an object is made it needs to be allocated space
 And also we need to know How do we choose whether an object is live or not. 
 
 ### 2) How Allocations Work in the Java Virtual Machine
-How does the allocation of Memory happens in java
+How does the allocation of Memory happens in java (any of one can happen in either old or young generation)
 1) allocate and incr pointer.
 2) But in multithreaded environment two threads may compete for the same piece of memory. So we'll be needing locks and locks are expensive. So TLABS (Thread-Local Allocation Buffers) used. This allows each thread to have a small portion of its Eden space that corresponds to its own share. As each thread can only access to their own TLAB, even the bump-the-pointer technique will allow memory allocations without a lock. 
 
@@ -260,14 +260,14 @@ How does the allocation of Memory happens in java
 
 ### 3) How do we choose an object to be live and others not. Does Young GC has to go every node to get live Young objects ?? And how does old GC see live objects?
 
+-------- ASIDE START-------- 
  JVM STACK AREA 
 For every thread, JVM creates a separate stack at the time of thread creation. The memory for a Java Virtual Machine stack does not need to be contiguous. The Java virtual machine only performs two operations directly on Java Stacks: it pushes and pops frames. And stack for a particular thread may be termed as Run – Time Stack. Each and every method call performed by that thread is stored in the corresponding run-time stack including parameters, local variables, intermediate computations, and other data. After completing a method, corresponding entry from the stack is removed. After completing all method calls the stack becomes empty and that empty stack is destroyed by the JVM just before terminating the thread. The data stored in the stack is available for the corresponding thread and not available to the remaining threads. Hence we can say local data is thread safe. Each entry in the stack is called Stack Frame or Activation Record.  
 
 The Java stack is composed of stack frames (or frames). A stack frame contains the state of one Java method invocation. When a thread invokes a method, the Java virtual machine pushes a new frame onto that thread's Java stack. When the method completes, the virtual machine pops and discards the frame for that method.  
+-------- ASIDE END-------- 
 
-
-What does live in live objects mean ?  
-Live roots -  
+**Live roots -**
 1) if reference coming from stack frame they must be live.  
 2) Static variables - not part of an instance . kinda global. So should be kept live.  
 3) if using Java Native interface (JNI) or synch monitors doing locking , Those are also live  
