@@ -338,10 +338,9 @@ Single threaded - it means it is a stop the world collector i.e we stop everythi
 ![noImage](./img/ParallelOldCollector.png)
 
 ### MGC4) concurrent mark and sweep
-Only collects old space. Only collect during major GC.
-no bump the pointer allocation
-fragments the heap and manages sets of free lists for each of the fragments. It tries to allocate the object in one of these fragments and so it has to check these free lists and update these free lists. So it causes the collector to run more slowly.
-however these are designed to be low latency collectors. So its throughput is much higher with this than parallel and parallel old.
+- Only collects old space. Only collect during major GC.
+- no bump the pointer allocation.... fragments the heap and manages sets of free lists for each of the fragments. It tries to allocate the object in one of these fragments and so it has to check these free lists and update these free lists. So it causes the collector to run more slowly.
+- However these are designed to be low latency collectors. So its throughput is much higher with this than parallel and parallel old.
 
 
 ![noImage](./img/ConcurrentMarkAndSweep1.png)
@@ -355,6 +354,7 @@ however these are designed to be low latency collectors. So its throughput is mu
 ![noImage](./img/ConcurrentMarkAndSweep2.png)
 
 It goes through different phases -
+Why does it has to stop the world (Ofcourse there is no space in Old generation. Where will you allocate a new object... i.e Why stop the world so that no new object is created and we dont have to put objects in old generation.)
 1) Initial mark - Mark objects taken from root refs. It does not traverse the graph . it only takes direct child of roots, So that we have minimal stop the world time.
 Now we need to traverse these nodes. But we can do that concurrently with application (i.e Java threads).
 
