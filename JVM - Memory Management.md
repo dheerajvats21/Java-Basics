@@ -337,7 +337,7 @@ Single threaded - it means it is a stop the world collector i.e we stop everythi
 
 ![noImage](./img/ParallelOldCollector.png)
 
-### MGC4) concurrent mark and sweep
+### MGC4) concurrent mark and sweep (https://plumbr.io/handbook/garbage-collection-algorithms-implementations/concurrent-mark-and-sweep)
 - Only collects old space. Only collect during major GC.
 - no bump the pointer allocation.... fragments the heap and manages sets of free lists for each of the fragments. It tries to allocate the object in one of these fragments and so it has to check these free lists and update these free lists. So it causes the collector to run more slowly.
 - However these are designed to be low latency collectors. So its throughput is much higher with this than parallel and parallel old.
