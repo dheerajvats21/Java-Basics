@@ -384,7 +384,8 @@ Usually CMS tries to run final remark phase when Young Generation is as empty as
 ### MGC 5) The G1 Garbage Collector
 G1 Garbage collector - planned replacement of CMS
 instead of having Eden and tenure OR
-Young and old memory. We now break all memory space into regions or blocks .
+Young and old memory. We now break all memory space into regions or blocks . 
+Young and Old BOTH GC done using blocks by G1 COLLECTOR.
 
 the G1 has two big advantages: (1) it can do most of its work concurrently (i.e., without halting application threads), and (2) it uses non-continuous spaces, which enables the G1 to efficiently deal with very large heaps. 
 
@@ -400,8 +401,7 @@ Granted, if one wants to collect the entire heap, the G1 has to do the same amou
 
 The G1 only stops the application at the beginning of the GC to do some quick bookkeeping before it immediately resumes the application. This phase is called the “Initial Mark”. Then, while the application is executing, the GC will follow all references and mark live objects (“Concurrent Mark” phase). When this is done, the application is suspended again, and a final cleanup is made (“Final Mark” phase) before selecting a few regions and collecting them (“Evacuation” phase). As the evacuation phase is fast, especially for large heaps, the G1 usually outperforms other GCs in terms of suspension time of the executed application.
 
-So working is same as CMS. its just that the collection is made on small fixed sized blocks. So happens quickly
-
+So working is same as CMS. its just that the collection is made on small fixed sized blocks. So happens quickly.
 
 ![noImage](./img/G1Collector1.png)
 
