@@ -322,7 +322,7 @@ They are of 5 types.
 (https://www.cubrid.org/blog/understanding-java-garbage-collection)  
 
 Now we look at different types of GCs
-Serial , Parallel and parallel old collector work in same way. Eden , survivor . old space and mark-sweep-compact algo.
+Serial , Parallel and parallel old collector work in same way. Uses mark-copy for the Young Generation and mark-sweep-compact for the Old Generation. Eden , survivor . old space and mark-sweep-copying(or compact) (for defragmentation) algo.
 Where they differ is the amount of concurrency each collector has.
 ### MGC1) Serial collector
 Single threaded - it means it is a stop the world collector i.e we stop everything and run GC.  
