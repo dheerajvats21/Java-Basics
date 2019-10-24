@@ -362,14 +362,13 @@ Just to bear in mind – in real world situation Minor Garbage Collections of th
 Now we need to traverse these nodes. But we can do that concurrently with application (i.e Java threads).
 
 2) Concurrent mark - Traverse object graph looking for live objects from objects from previous phase. ANY OBJECT (from young gen to old gen) ALLOCATION MADE DURING THIS PHASE IS AUTOMATICALLY MARKED LIVE.
-We wanna go towards - marking all live objects in the Old Generation.
-During One traversal of graph it may be so that references of some nodes are changed as this is happening concurrently with Java threads i.e new references to some objects are made or references to some object are removed. JVM mark these objects/nodes as "DIRTY" and then it again traverses graph for these changed nodes marking nodes as live or unlive.
+-We wanna go towards - marking all live objects in the Old Generation.
+-During One traversal of graph it may be so that references of some nodes are changed as this is happening concurrently with Java threads i.e new references to some objects are made or references to some object are removed. JVM mark these objects/nodes as "DIRTY" and then it again traverses graph for these changed nodes marking their child nodes as live or notLive.
+-This happens iteratively until one of the abortion conditions (such as the number of iterations, amount of useful work done, elapsed wall clock time, etc) is met. This phase may significantly impact the duration of the upcoming stop-the-world pause.
 
-This happens iteratively until one of the abortion conditions (such as the number of iterations, amount of useful work done, elapsed wall clock time, etc) is met. This phase may significantly impact the duration of the upcoming stop-the-world pause.
+3) Remark - In the final remark step, the objects that were newly added or stopped being referenced (because java threads were running concurrently) in the concurrent mark step are checked and then corresponding entries are marked live or not live. It has to be stop the world to guarantee no more objects created while this step is  executing. This step happens quickly because of re-iterative characteristic of previous step which leaves very less work for this step.
 
-3) Remark - In the remark step, the objects that were newly added or stopped being referenced (because java threads were running concurrently) in the concurrent mark step are checked and then corresponding entries are marked live or not live. It has to be stop the world to guarantee no more objects created while this step is  executing. This happens quickly because of re-iterative characteristic of previous step which leaves very less work for this step.
-
-The goal of this stop-the-world phase is to finalize marking all live objects in the Old Generation. Since the previous preclean phases were concurrent, they may have been unable to keep up with the application’s mutating speeds. A stop-the-world pause is required to finish the ordeal.
+The goal of this stop-the-world phase is to finalize marking all live objects in the Old Generation. Since the previous  phases were concurrent, they may have been unable to keep up with the application’s mutating speeds. A stop-the-world pause is required to finish the ordeal.
 
 Usually CMS tries to run final remark phase when Young Generation is as empty as possible in order to eliminate the possibility of several stop-the-world phases happening back-to-back.
 
