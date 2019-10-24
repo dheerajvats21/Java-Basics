@@ -355,14 +355,25 @@ Single threaded - it means it is a stop the world collector i.e we stop everythi
 
 It goes through different phases -
 Why does it has to stop the world (Ofcourse there is no space in Old generation. Where will you allocate a new object... i.e Why stop the world so that no new object is created and we dont have to put objects in old generation.)
-1) Initial mark - Mark objects taken from root refs. It does not traverse the graph . it only takes direct child of roots, So that we have minimal stop the world time.
+
+Just to bear in mind – in real world situation Minor Garbage Collections of the Young Generation can occur anytime during concurrent collecting the Old Generation. In such case the major collection records seen below will be interleaved with the Minor GC events.
+1) Initial mark - Mark objects taken from root refs. It does not traverse the graph . it only takes direct child of roots, So that we have minimal stop the world time. The goal of this phase is to mark all the objects in the Old Generation that are either direct GC roots or are referenced from some live object in the Young Generation. 
+
 Now we need to traverse these nodes. But we can do that concurrently with application (i.e Java threads).
 
 2) Concurrent mark - Traverse object graph looking for live objects from objects from previous phase. ANY OBJECT (from young gen to old gen) ALLOCATION MADE DURING THIS PHASE IS AUTOMATICALLY MARKED LIVE.
+We wanna go towards - marking all live objects in the Old Generation.
+During One traversal of graph it may be so that references of some nodes are changed as this is happening concurrently with Java threads i.e new references to some objects are made or references to some object are removed. JVM mark these objects/nodes as "DIRTY" and then it again traverses graph for these changed nodes marking nodes as live or unlive.
 
-3) Remark - In the remark step, the objects that were newly added or stopped being referenced (because java threads were running concurrently) in the concurrent mark step are checked. It has to be stop the world to guarantee no more objects created while this step is  executing. Happens quickly.
+This happens iteratively until one of the abortion conditions (such as the number of iterations, amount of useful work done, elapsed wall clock time, etc) is met. This phase may significantly impact the duration of the upcoming stop-the-world pause.
 
-4) concurrent sweep - collect object not marked.i.e after previous phase it knows objects that were not marked i.e these nodes must behaving flag of “NOT MARKED . So does not matter even if new objects are created during this process. It will only collect these unmarked  objects. 
+3) Remark - In the remark step, the objects that were newly added or stopped being referenced (because java threads were running concurrently) in the concurrent mark step are checked and then corresponding entries are marked live or not live. It has to be stop the world to guarantee no more objects created while this step is  executing. This happens quickly because of re-iterative characteristic of previous step which leaves very less work for this step.
+
+The goal of this stop-the-world phase is to finalize marking all live objects in the Old Generation. Since the previous preclean phases were concurrent, they may have been unable to keep up with the application’s mutating speeds. A stop-the-world pause is required to finish the ordeal.
+
+Usually CMS tries to run final remark phase when Young Generation is as empty as possible in order to eliminate the possibility of several stop-the-world phases happening back-to-back.
+
+4) concurrent sweep - collect object not marked live.i.e after previous phase it knows objects that were not marked live i.e these nodes must behaving flag of “NOT MARKED LiVE" . So does not matter even if new objects are created during this process. It will only collect these unmarked  objects. 
 
 5) Resetting - resets everything for next round.
 
