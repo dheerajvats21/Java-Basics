@@ -392,14 +392,15 @@ Instead of splitting the heap into three spaces (Eden, survivor, and old) . Heap
 Assuming that the collected region was of the Eden space, the unassigned region holding all surviving objects(now) will then become a survivor region. Ideally, if a region is full of garbage (meaning it doesn’t contain a single surviving object), the region can be declared “unassigned” and no work has to be done there.
 
 
-https://www.dynatrace.com/news/blog/understanding-g1-garbage-collector-java-9/
+https://www.dynatrace.com/news/blog/understanding-g1-garbage-collector-java-9/ - no need to read.
+
 So it is saving time by only collecting some blocks and not all heap at once.
 
 Granted, if one wants to collect the entire heap, the G1 has to do the same amount of work as any other GC, but this is where the G1 shines because it doesn’t have to collect the entire heap. It doesn’t even have to collect an entire generation. It can select any number or combination of regions to collect. To optimize collection time, it always selects regions that are full (or almost full) of garbage and thereby minimizes the amount of work it has to do to free heap space for subsequent allocations. Other GCs always collect an entire generation, meaning their run-time complexity often depends on the total heap size. In the G1 case however, this depends on the amount of live objects because memory can be freed without handling an entire generation. Ideally, when the heap is big enough, some regions will always be completely full of garbage, making it easy to collect them.
 
 The G1 only stops the application at the beginning of the GC to do some quick bookkeeping before it immediately resumes the application. This phase is called the “Initial Mark”. Then, while the application is executing, the GC will follow all references and mark live objects (“Concurrent Mark” phase). When this is done, the application is suspended again, and a final cleanup is made (“Final Mark” phase) before selecting a few regions and collecting them (“Evacuation” phase). As the evacuation phase is fast, especially for large heaps, the G1 usually outperforms other GCs in terms of suspension time of the executed application.
 
-So working is same as CMS. its just that the collection is made on blocks. So happens quickly
+So working is same as CMS. its just that the collection is made on small fixed sized blocks. So happens quickly
 
 
 ![noImage](./img/G1Collector1.png)
