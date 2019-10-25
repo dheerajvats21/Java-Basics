@@ -445,6 +445,38 @@ The task of main thread is to execute the main() method. The task of thread sche
 
 Special references available
 special because JVM handles them differently and is aware of their existence.
+
+Suppose one needs to fetch data from a MASTER TABLE. We certainly don’t want the application to call the database every time. 
+So we use Cache. Cache is a class (Internally a Map), and first an application will check if data is available there, otherwise it will check the database and put the entry in cache, so next time it can be found in the cache to skip a database call.
+
+Is it Going to Improve Performance?
+It will depend on the situation, If the master table has fewer entries this will work fine and certainly increase the performance. But if Master Table has huge entries, it will create a problem as the Cache map is growing as entries load  from Master Table. Now instead of providing better performance it may lead to  out of memory. Imagine a situation where all rows in this huge master table have been loaded to cache. Think about the size of the cache, it can either take most of the JVM memory or it can produce an out of memory error (as all memory is live and GC cant reclaim so is out of memory).
+
+So What Should We Do?
+One thing we can do is to restrict the number of entries in the Cache and delete old entries. It will partially solve the problem, but it will take constant memory in JVM (as we have just restricted the number of entries.. not dynamically removed objects), although some of the objects in the cache will not be used for a long time.
+
+What is the Ideal Solution?
+The ideal solution would be if we can make a type of cache which is dynamic in nature, and can grow and shrink as needed. So we need some kind of technique where we can delete those entries sitting in the cache which will not be used for a long time.
+
+To achieve it in Java, we provide different types of reference in the java.lang.ref package.
+
+Strong Reference:  We use Strong references in Java everywhere: we can create an object and then assign it to a reference. Note that if the object has a strong reference, this object is never be garbage collected.
+
+Example:
+
+HelloWorld hello = new HelloWorld(); 
+
+Here hello is the strong reference to HelloWorld Object.
+
+Soft Reference: If an object has no strong reference but has a soft reference, then the garbage collector reclaims this object’s memory when GC needs to free up some memory. To get Object from a soft reference, one can invoke the get() method. If the object is not GCed, it returns the object, otherwise , it returns null.
+
+Weak Reference: If an object has no strong reference but has a weak reference then GC reclaims this object’s memory in next run even though there is enough memory. 
+
+Phantom Reference: If an object does not have any of the above references then it may have a phantom reference. Phantom references can’t be accessed directly. When using a get() method it will always return null. 
+
+Phantom Reference can be used in situations, where sometimes using finalize() is not  sensible.This is a special reference which says that the object was already finalized, and the garbage collector is ready to reclaim its memory.
+
+
 if coming to out of memory exception then softly referenced objects will be GCied
 Soft reference is able to keep object alive under certain circumstances but weak reference will never keep an object alive. So whenever GC runs, then an object with no strong and Soft reference will be GCied.
 
