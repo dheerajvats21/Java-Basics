@@ -429,6 +429,16 @@ So working is same as CMS. its just that the collection is made on small fixed s
 ![noImage](./img/WhichCollector2.png)
 
 
+
+--------------- ASIDE START ------------------
+
+Whenever you run a java program, JVM creates three threads. 1) main thread   2) Thread Scheduler   3) Garbage Collector Thread. In these three threads, main thread is a user thread and remaining two are daemon threads which run in background.
+
+The task of main thread is to execute the main() method. The task of thread scheduler is to schedule the threads. The task of garbage collector thread is to sweep out abandoned objects from the heap memory. Abandoned objects or dead objects are those objects which does not have live references. Garbage collector thread before sweeping out an abandoned object, it calls finalize() method of that object. After finalize() method is executed, object is destroyed from the memory. That means clean up operations which you have kept in the finalize() method are executed before an object is destroyed from the memory.
+
+--------------- ASIDE END ------------------
+
+
 ## Java Reference Classes
 
 ### Introduction to Java Reference Types
