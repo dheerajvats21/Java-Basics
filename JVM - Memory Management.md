@@ -476,8 +476,10 @@ HelloWorld hello = new HelloWorld();
 Here hello is the strong reference to HelloWorld Object.
 
 Soft Reference: If an object has no strong reference but has a soft reference, then the garbage collector reclaims this object’s memory when GC needs to free up some memory. To get Object from a soft reference, one can invoke the get() method. If the object is not GCed, it returns the object, otherwise , it returns null.
+If there is no strong reference to an object still it can survive GC if it has a soft reference towards it.
+So what capability does it give .... Yeah man we got solution to problem that we faced in mac=king a cache. We can make a dynamic cache which in case of memory pressure can dynamially shrink.
 
-Weak Reference: If an object has no strong reference but has a weak reference then GC reclaims this object’s memory in next run even though there is enough memory. 
+Weak Reference: If an object has no strong reference but has a weak reference then GC reclaims this object’s memory in next run even though there is enough memory. So if we wanted to have a reference which does not have any effect on the objects life, i.e if an object is dying it would not stop it. Soft Reference would stop it from dying until there is memory pressure. So we can refer to an object through weak reference till it has a strong reference to it. If an object has no strong reference then in next GC it would be reclaimed and weak reference would point to null. .. What capability does it give us ..... So it can be used to assign info about a live object till it is alive without coming in b/w lifecycle of that object. 
 
 Phantom Reference: If an object does not have any of the above references then it may have a phantom reference. Phantom references can’t be accessed directly. When using a get() method it will always return null. 
 
@@ -555,12 +557,14 @@ What if we have created HashMap with key as normal object to put meta data ? Wha
 ![noImage](./img/WeakHashMap8.png)
 
 
-**Soft reference** - used for caching
+**Soft reference** - used for caching...
 Idea is that when we have a large object (maybe an image object that we require to get from a server) , I create a strong reference to it AND a soft reference to it.
-When object not needed I can make strong reference to null.
-So i can retrieve this object if i need to by going through soft reference. In case of memory pressure this will go away and when i call get on soft reference i will return null.
 
-Soft reference caching - ( SEE PICS ) not that good as GC manages everything . so we have no control over cache. We cannot used LRU or MRU list. So control of when an element will leave the cache is not our hands.
+When object not needed I can make strong reference to null.
+
+So I can retrieve this object if I need to by going through soft reference . In case of memory pressure this will go away and when i call get on soft reference i will return null. (acting like a cache if not mamPressure cache hit will occure for this reference, But in memPresuure if this object is collected them this "softReference" will give null ... So cache miss)
+
+Soft reference caching -  not that good as GC manages everything . so we have no control over cache. We cannot used LRU or MRU list. So control of when an element will leave the cache is not our hands.
 So soft references can act only as simple cache.. not good for caching in general.
 
 
