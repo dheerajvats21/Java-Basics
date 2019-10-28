@@ -13,14 +13,19 @@ MIND MAP -
    Memory - Eden Space , survivor space, tenured space , permanent space.
 4) Young Generation - Eden Space , survivor space.
 5) Minor Garbage collection (how it happens using youg Generation), Major Garbage Collection (What is it).
-6) ASIDES before going to Major Garbage Collection- 
+6) ASIDES before going to Major Garbage Collection.
              - How to objects come in old generation
              - How objects are allocated by JVM. - bump the pointer, TLBs
              - How objects are choosen to be live (by young GC and old generation GC).
              - How choosing of live objects is made easy for Young Gen GC. (What Is a Cardtable and How Is It Used in Garbage Collection...write barries.)
              - a prediction about Old Gen mechanism of watching live objects.
 
-
+7) Gcs used by JVM. All of these do Old Generation collection atleast.
+  7.1 Serial GC - stop the world collector, Single threaded
+  7.2 Parallel GC - Single thread for minor and Multiple thread for major collection.
+  7.3 Paralle Old GC - Multiple threads for both.
+  7.4 concurrent Mark and sweep - Only collect during major GC. Initial mark (stop the world) , concurernt mark, remark (stop the world), concurrent swwep, reset
+  7.5 G1 GC - only collected some blocks not all blocks of oe region at once .. i.e why fast
 # JVM Memory Management
 
 ## :bulb: Introduction 
