@@ -579,7 +579,7 @@ least used reference. allows us to interact with GC. We can use this to monitor 
 finalize in java - wherever u can use finalize u can use phantom reference . finalizers are expensive
 
 When we call get method on phantom refs they always return null.
-Used instead of finalizers which can be expensive as when an object is constructed the runtime has to know about it as it need to call finalize method on it once the object is no longer reachable. So it means there is a code that runs that tells The GC that we have an object that is finalizable. There is a reference to that finalizable object kept by the runtime. So these objects will survive at least one GC as the runtime itself goes to reference these things and runtime must at some point call finalize method before finally releasing the object.
+Used instead of finalizers which can be expensive as when we add a finalizeer to class and  when that class is created the Garbage collector has to know about it.. as it need to call finalize method on it once the object is no longer reachable. So it means when sucha an object is created , there is a code that runs that tells The GC that we have an object that is finalizable. There is a reference to that finalizable object kept by the runtime. So these objects will survive at least one GC as the runtime itself goes to reference these things and runtime must at some point call finalize method before finally releasing the object.
 
 We have more control over when the final clean up of the object happens. It's not under garbage collector, it more under our control.
 
