@@ -26,6 +26,11 @@ MIND MAP -
   7.3 Paralle Old GC - Multiple threads for both.
   7.4 concurrent Mark and sweep - Only collect during major GC. Initial mark (stop the world) , concurernt mark, remark (stop the world), concurrent swwep, reset
   7.5 G1 GC - only collected some blocks not all blocks of oe region at once .. i.e why fast
+8) Java Reference Types - Different types of references . used for different purposes.. mostly related to Garbage collection (difference in ways they are GCied)
+   8.1) Soft reference - notGCied until memory perssure . Use case - caching
+   8.2) Weak Reference - Gcied in next Gc . Use case - storing meta datafor a live object.
+   8.3) Phantom reference - initialized with a necessary reference queue parameter. When object needs to be garbage collected , it is enqueued in to this queue which can then be polled out of queue and when can o its cleanup mechanism . So gives control of when objects is reclaimed to us . So used instead of finalize , ehich is expensive. 
+
 # JVM Memory Management
 
 ## :bulb: Introduction 
