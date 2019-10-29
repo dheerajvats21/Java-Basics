@@ -28,8 +28,9 @@ MIND MAP -
   7.5 G1 GC - only collected some blocks not all blocks of oe region at once .. i.e why fast
 8) Java Reference Types - Different types of references . used for different purposes.. mostly related to Garbage collection (difference in ways they are GCied)
    8.1) Soft reference - notGCied until memory perssure . Use case - caching
-   8.2) Weak Reference - Gcied in next Gc . Use case - storing meta datafor a live object.
-   8.3) Phantom reference - initialized with a necessary reference queue parameter. When object needs to be garbage collected , it is enqueued in to this queue which can then be polled out of queue and when can o its cleanup mechanism . So gives control of when objects is reclaimed to us . So used instead of finalize , ehich is expensive. 
+   8.2) Weak Reference - Gcied in next Gc . Use case - storing meta datafor a live object. Weak HashMap
+   8.3) Phantom reference - initialized with a necessary reference queue parameter. When object needs to be garbage collected , it is enqueued in to this queue which can then be polled out of queue and when can o its cleanup mechanism . So gives control of when objects is reclaimed to us . So used instead of finalize , ehich is expensive.
+   8.4) reference queue used with references to get control to call cleanup method i.e we get control of when an object will be collected. (finalizers can be expensive as they survive at least one GCollection as GCollector reference them to call finalize after ehich they are released).
 
 # JVM Memory Management
 
